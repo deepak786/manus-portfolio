@@ -24,15 +24,14 @@ export function Hero() {
             <Button size="lg" onClick={scrollToContact}>
               Contact Me
             </Button>
-            <Button 
-              variant="outline" 
-              size="lg" 
-              as="a" 
-              href="https://github.com/deepak786" 
-              target="_blank" 
-              rel="noopener noreferrer"
-            >
-              View GitHub
+            <Button variant="outline" size="lg" asChild>
+              <a 
+                href="https://github.com/deepak786"
+                target="_blank" 
+                rel="noopener noreferrer"
+              >
+                View GitHub
+              </a>
             </Button>
           </div>
         </div>
