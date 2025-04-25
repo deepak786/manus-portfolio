@@ -44,7 +44,7 @@ export async function Articles() {
                   </p>
                 </div>
                 <div className="p-4 pt-0">
-                <Button variant="outline" asChild>
+                <Button variant="outline" className="w-full" asChild>
                     <a 
                       href={article.link}
                       target="_blank" 
