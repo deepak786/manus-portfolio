@@ -50,7 +50,7 @@ export async function Contributions() {
           </Card>
         </div>
 
-        <div className="flex flex-col md:flex-row gap-6">
+        <div className="flex flex-col md:flex-row gap-6 mb-8">
           <Card className="flex-1">
             <div className="p-6">
               <h3 className="text-xl font-semibold mb-2">GitHub</h3>
@@ -91,7 +91,7 @@ export async function Contributions() {
           </Card>
         </div>
         
-        <div className="mb-8">
+        <div className="">
           <Card>
             <div className="p-6">
               <h3 className="text-xl font-semibold mb-2">pub.dev</h3>
