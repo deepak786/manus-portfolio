@@ -7,7 +7,7 @@ export function Support() {
     <section id="support" className="section">
       <div className="container">
         <h2 className="section-title">Support My Work</h2>
-        <p className="text-muted-foreground text-center mb-8">
+        <p className="text-muted-foreground mb-8">
           If you find my work helpful or valuable, consider supporting me through the following platforms:
         </p>
         

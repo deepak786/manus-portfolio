@@ -19,7 +19,7 @@ export function About() {
             </p>
           </div>
           <div>
-            <Card className="h-full flex flex-col justify-center">
+            <Card className="h-full flex flex-col justify-center p-4">
               <h3 className="text-xl font-semibold mb-4">Skills & Expertise</h3>
               <div className="grid grid-cols-2 gap-2">
                 <div className="flex items-center gap-2">
