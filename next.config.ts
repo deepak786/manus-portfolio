@@ -1,7 +1,10 @@
 import { NextConfig } from 'next'
 const nextConfig: NextConfig = {
-  /* config options here */
   output: 'export',
+  basePath: '',
+  images: {
+    unoptimized: true,
+  },
   eslint: {
     ignoreDuringBuilds: true,
   },
@@ -9,5 +12,4 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: true,
   },
 }
-
 export default nextConfig
