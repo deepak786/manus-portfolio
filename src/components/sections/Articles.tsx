@@ -44,8 +44,14 @@ export async function Articles() {
                   </p>
                 </div>
                 <div className="p-4 pt-0">
-                  <Button variant="outline" className="w-full" as="a" href={article.link} target="_blank" rel="noopener noreferrer">
-                    Read on Medium
+                <Button variant="outline" asChild>
+                    <a 
+                      href={article.link}
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                    >
+                      Read on Medium
+                    </a>
                   </Button>
                 </div>
               </Card>
@@ -61,8 +67,14 @@ export async function Articles() {
                   </p>
                 </div>
                 <div className="p-4 pt-0">
-                  <Button variant="outline" className="w-full" as="a" href="https://medium.com/@deepakdroid" target="_blank" rel="noopener noreferrer">
-                    Visit Medium Profile
+                  <Button variant="outline" asChild>
+                    <a 
+                      href="https://medium.com/@deepakdroid" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                    >
+                      Visit Medium Profile
+                    </a>
                   </Button>
                 </div>
               </Card>
@@ -72,8 +84,14 @@ export async function Articles() {
         
         {articles.length > 6 && (
           <div className="mt-8 text-center">
-            <Button as="a" href="https://medium.com/@deepakdroid" target="_blank" rel="noopener noreferrer">
-              View All Articles
+            <Button asChild>
+              <a 
+                href="https://medium.com/@deepakdroid" 
+                target="_blank" 
+                rel="noopener noreferrer"
+              >
+                View All Articles
+              </a>
             </Button>
           </div>
         )}
