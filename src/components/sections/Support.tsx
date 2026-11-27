@@ -1,52 +1,65 @@
-import React from 'react';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { Coffee, Heart, Wallet } from 'lucide-react';
+import { links } from '@/lib/site';
+
+const options = [
+  {
+    title: 'GitHub Sponsors',
+    description: 'Monthly or one-time support, with tiers for individuals and companies. The best way to support ongoing work.',
+    href: links.sponsors,
+    cta: 'Become a sponsor',
+    icon: Heart,
+    iconClass: 'text-pink-400 bg-pink-500/10',
+    primary: true,
+  },
+  {
+    title: 'Buy Me a Coffee',
+    description: 'A quick one-time thank-you for a package, demo or article that helped you.',
+    href: links.buyMeACoffee,
+    cta: 'Buy me a coffee',
+    icon: Coffee,
+    iconClass: 'text-amber-300 bg-amber-400/10',
+    primary: false,
+  },
+  {
+    title: 'PayPal',
+    description: 'Prefer PayPal? Send any amount you like.',
+    href: links.paypal,
+    cta: 'Support via PayPal',
+    icon: Wallet,
+    iconClass: 'text-sky-300 bg-sky-400/10',
+    primary: false,
+  },
+];
 
 export function Support() {
   return (
-    <section id="support" className="section">
+    <section id="support" className="section border-t border-white/[0.06]">
       <div className="container">
-        <h2 className="section-title">Support My Work</h2>
-        <p className="text-muted-foreground mb-8">
-          If you find my work helpful or valuable, consider supporting me through the following platforms:
+        <p className="eyebrow">Support</p>
+        <h2 className="section-title">Keep the open-source work going.</h2>
+        <p className="section-lead">
+          My packages, including intercom_flutter, and the System Thinking Playground are free and built in my spare
+          time. If they help you or your team, your support keeps them maintained and growing.
         </p>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Card>
-            <div className="p-6">
-              <h3 className="text-xl font-semibold mb-2">Buy Me a Coffee</h3>
-              <p className="text-muted-foreground mb-4">
-                If you appreciate my open source contributions or find my content helpful, you can buy me a coffee to show your support.
-              </p>
-              <Button asChild>
-                <a 
-                  href="https://buymeacoffee.com/deepakdroid" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                >
-                  Buy Me a Coffee
-                </a>
-              </Button>
+
+        <div className="mt-12 grid gap-5 md:grid-cols-3">
+          {options.map((option) => (
+            <div key={option.title} className="panel flex flex-col p-7">
+              <span className={`grid h-11 w-11 place-items-center rounded-xl ${option.iconClass}`}>
+                <option.icon size={20} />
+              </span>
+              <h3 className="mt-5 text-lg font-semibold text-white">{option.title}</h3>
+              <p className="mt-2 flex-1 text-sm leading-relaxed text-muted-foreground">{option.description}</p>
+              <a
+                href={option.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`btn mt-6 ${option.primary ? 'btn-primary' : 'btn-ghost'}`}
+              >
+                {option.cta}
+              </a>
             </div>
-          </Card>
-          
-          <Card>
-            <div className="p-6">
-              <h3 className="text-xl font-semibold mb-2">PayPal</h3>
-              <p className="text-muted-foreground mb-4">
-                You can also support my work through PayPal if you prefer this payment method.
-              </p>
-              <Button asChild>
-                <a 
-                  href="https://www.paypal.com/paypalme/deepakdroid" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                >
-                  Support via PayPal
-                </a>
-              </Button>
-            </div>
-          </Card>
+          ))}
         </div>
       </div>
     </section>

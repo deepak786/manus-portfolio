@@ -1,98 +1,58 @@
-import React from 'react';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { formatDate, truncateText } from '@/lib/utils';
+import { ArrowUpRight } from 'lucide-react';
 import { getMediumArticles } from '@/lib/medium';
+import { links } from '@/lib/site';
+import { formatDate, truncateText } from '@/lib/utils';
+
+function toPlainText(html: string) {
+  return html
+    .replace(/<[^>]*>?/gm, ' ')
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;|&apos;/g, "'")
+    .replace(/&nbsp;/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
 
 export async function Articles() {
-  const articles = await getMediumArticles('deepakdroid');
-  
-  // Function to extract plain text from HTML content
-  const extractPlainText = (html: string) => {
-    // Simple regex to remove HTML tags
-    return html.replace(/<[^>]*>?/gm, '').trim();
-  };
+  const articles = (await getMediumArticles('deepakdroid')).slice(0, 3);
 
   return (
-    <section id="articles" className="section">
+    <section id="writing" className="section border-t border-white/[0.06]">
       <div className="container">
-        <h2 className="section-title">Latest Articles</h2>
-        <p className="text-muted-foreground mb-8">
-          My latest thoughts and insights on development, technology, and more.
-        </p>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {articles.length > 0 ? (
-            articles.slice(0, 6).map((article, index) => (
-              <Card key={index} className="flex flex-col">
-                {article.thumbnail && (
-                  <div className="aspect-video w-full overflow-hidden rounded-t-lg">
-                    <img 
-                      src={article.thumbnail} 
-                      alt={article.title}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                )}
-                <div className="p-4 flex-1">
-                  <p className="text-sm text-muted-foreground mb-2">
-                    {formatDate(article.pubDate)}
-                  </p>
-                  <h3 className="text-xl font-semibold mb-2">{article.title}</h3>
-                  <p className="text-muted-foreground mb-4">
-                    {truncateText(extractPlainText(article.content), 120)}
-                  </p>
-                </div>
-                <div className="p-4 pt-0">
-                <Button variant="outline" className="w-full" asChild>
-                    <a 
-                      href={article.link}
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                    >
-                      Read on Medium
-                    </a>
-                  </Button>
-                </div>
-              </Card>
-            ))
-          ) : (
-            // Fallback if no articles are found
-            <>
-              <Card className="flex flex-col">
-                <div className="p-4 flex-1">
-                  <h3 className="text-xl font-semibold mb-2">No articles found</h3>
-                  <p className="text-muted-foreground mb-4">
-                    Check back later for new articles or visit my Medium profile directly.
-                  </p>
-                </div>
-                <div className="p-4 pt-0">
-                  <Button variant="outline" asChild>
-                    <a 
-                      href="https://medium.com/@deepakdroid" 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                    >
-                      Visit Medium Profile
-                    </a>
-                  </Button>
-                </div>
-              </Card>
-            </>
-          )}
+        <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
+          <div>
+            <p className="eyebrow">Writing</p>
+            <h2 className="section-title">Notes from building things.</h2>
+            <p className="section-lead">Articles on Flutter, AI and solving real engineering problems.</p>
+          </div>
+          <a href={links.medium} target="_blank" rel="noopener noreferrer" className="btn btn-ghost shrink-0">
+            All articles on Medium <ArrowUpRight size={16} />
+          </a>
         </div>
-        
-        {articles.length > 6 && (
-          <div className="mt-8 text-center">
-            <Button asChild>
-              <a 
-                href="https://medium.com/@deepakdroid" 
-                target="_blank" 
+
+        {articles.length > 0 && (
+          <div className="mt-12 grid gap-5 md:grid-cols-3">
+            {articles.map((article) => (
+              <a
+                key={article.link}
+                href={article.link}
+                target="_blank"
                 rel="noopener noreferrer"
+                className="panel panel-hover group flex flex-col p-6"
               >
-                View All Articles
+                <time className="font-mono text-xs text-muted-foreground">{formatDate(article.pubDate)}</time>
+                <h3 className="mt-3 font-semibold leading-snug text-white">{toPlainText(article.title)}</h3>
+                <p className="mt-3 flex-1 text-sm leading-relaxed text-muted-foreground">
+                  {truncateText(toPlainText(article.content), 140)}
+                </p>
+                <span className="mt-5 inline-flex items-center gap-1 text-sm text-foreground/80 group-hover:text-white">
+                  Read on Medium <ArrowUpRight size={14} />
+                </span>
               </a>
-            </Button>
+            ))}
           </div>
         )}
       </div>
