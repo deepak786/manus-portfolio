@@ -1,46 +1,41 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { Inter, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
 import { Navbar } from '@/components/Navbar';
+import { Footer } from '@/components/Footer';
 
-const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
+const sans = Inter({ subsets: ['latin'], variable: '--font-sans' });
+const mono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-mono' });
+
+const title = 'Deepak Goyal · Tech Lead & Software Consultant';
+const description =
+  'Tech Lead at Agenda Boa with 10+ years of software development, focused on Flutter, Android and iOS. Maintainer of intercom_flutter and creator of System Thinking Playground.';
 
 export const metadata: Metadata = {
-  title: 'Deepak Goyal - Portfolio',
-  description: 'Senior Software Engineer, Developer, and Open Source Contributor with 10+ years of experience',
+  metadataBase: new URL('https://deepakdroid.xyz'),
+  title,
+  description,
+  openGraph: {
+    title,
+    description,
+    url: 'https://deepakdroid.xyz',
+    siteName: 'Deepak Goyal',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary',
+    title,
+    description,
+  },
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <body className={`${inter.variable} font-sans`}>
+    <html lang="en" className={`${sans.variable} ${mono.variable}`}>
+      <body className="font-sans">
         <Navbar />
         <main>{children}</main>
-        <footer className="border-t py-6 md:py-8">
-          <div className="container flex flex-col items-center justify-center gap-4 md:flex-row md:justify-between">
-            <p className="text-center text-sm text-muted-foreground">
-              &copy; {new Date().getFullYear()} Deepak Goyal. All rights reserved.
-            </p>
-            <div className="flex items-center gap-4">
-              <a href="https://github.com/deepak786" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary">
-                GitHub
-              </a>
-              <a href="https://medium.com/@deepakdroid" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary">
-                Medium
-              </a>
-              <a href="https://stackoverflow.com/users/3452078/deepak-goyal" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary">
-                StackOverflow
-              </a>
-              <a href="https://www.linkedin.com/in/deepakdroid/" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary">
-                LinkedIn
-              </a>
-            </div>
-          </div>
-        </footer>
+        <Footer />
       </body>
     </html>
   );

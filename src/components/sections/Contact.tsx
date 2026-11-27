@@ -1,161 +1,172 @@
 'use client';
 
-import React, { useState } from 'react';
-import { Button } from '@/components/ui/button';
+import { useState } from 'react';
+import { CheckCircle2, Github, Linkedin, Loader2, Send } from 'lucide-react';
+import { links } from '@/lib/site';
+
+const accessKey = process.env.NEXT_PUBLIC_WEB3FORMS_KEY;
+
+type Status = { state: 'idle' | 'sending' | 'sent' | 'error'; message?: string };
+
+const topics = [
+  'Freelance project',
+  'Software consulting',
+  'Code review',
+  'Intercom integration',
+  'Sponsorship',
+  'Something else',
+];
 
 export function Contact() {
-  const [formState, setFormState] = useState({
-    name: '',
-    email: '',
-    subject: '',
-    message: ''
-  });
-  
-  const [status, setStatus] = useState({
-    submitted: false,
-    submitting: false,
-    info: { error: false, msg: null }
-  });
+  const [status, setStatus] = useState<Status>({ state: 'idle' });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormState({
-      ...formState,
-      [e.target.name]: e.target.value
-    });
-  };
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const data = new FormData(form);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setStatus({
-      submitted: false,
-      submitting: true,
-      info: { error: false, msg: null }
-    });
+    if (data.get('botcheck')) return;
+
+    if (!accessKey) {
+      setStatus({ state: 'error', message: 'The contact form is not set up yet. Please reach out on LinkedIn instead.' });
+      return;
+    }
+
+    setStatus({ state: 'sending' });
 
     try {
-      // In a real implementation, you would send this data to a server
-      // For now, we'll simulate a successful submission
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      setStatus({
-        submitted: true,
-        submitting: false,
-        info: { error: false, msg: 'Message sent successfully!' }
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({
+          access_key: accessKey,
+          subject: `deepakdroid.xyz: ${data.get('topic')}`,
+          from_name: 'deepakdroid.xyz',
+          name: data.get('name'),
+          email: data.get('email'),
+          topic: data.get('topic'),
+          message: data.get('message'),
+        }),
       });
-      
-      setFormState({
-        name: '',
-        email: '',
-        subject: '',
-        message: ''
-      });
-      
-      // Reset form after 5 seconds
-      setTimeout(() => {
-        setStatus({
-          submitted: false,
-          submitting: false,
-          info: { error: false, msg: null }
-        });
-      }, 5000);
-    } catch (error) {
+      const result = (await response.json()) as { success?: boolean; message?: string };
+
+      if (!response.ok || !result.success) {
+        throw new Error(result.message);
+      }
+
+      form.reset();
+      setStatus({ state: 'sent' });
+    } catch {
       setStatus({
-        submitted: false,
-        submitting: false,
-        info: { error: true, msg: 'Something went wrong. Please try again later.' }
+        state: 'error',
+        message: 'Your message could not be sent. Please try again, or reach out on LinkedIn.',
       });
     }
-  };
+  }
 
   return (
-    <section id="contact" className="section">
-      <div className="container">
-        <h2 className="section-title">Contact Me</h2>
-        <p className="text-muted-foreground mb-8">
-          Have a project in mind or want to discuss a potential collaboration? Feel free to reach out!
-        </p>
-        
-        <div className="max-w-2xl mx-auto">
-          <form className="space-y-6" onSubmit={handleSubmit}>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label htmlFor="name" className="block text-sm font-medium mb-2">
-                  Name
+    <section id="contact" className="section border-t border-white/[0.06]">
+      <div className="container grid gap-12 lg:grid-cols-[1fr_1.3fr]">
+        <div>
+          <p className="eyebrow">Contact</p>
+          <h2 className="section-title">Let&apos;s build something.</h2>
+          <p className="section-lead">
+            Have a project, an Intercom integration question, or want to sponsor my work? Send me a message and
+            I&apos;ll get back to you by email.
+          </p>
+          <div className="mt-8 flex flex-col gap-3">
+            <a
+              href={links.linkedin}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-3 text-muted-foreground transition hover:text-white"
+            >
+              <Linkedin size={18} /> linkedin.com/in/deepakdroid
+            </a>
+            <a
+              href={links.github}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-3 text-muted-foreground transition hover:text-white"
+            >
+              <Github size={18} /> github.com/deepak786
+            </a>
+          </div>
+        </div>
+
+        <div className="panel p-7 md:p-8">
+          {status.state === 'sent' ? (
+            <div className="flex min-h-[360px] flex-col items-center justify-center text-center">
+              <CheckCircle2 size={44} className="text-emerald-400" />
+              <h3 className="mt-5 text-xl font-semibold text-white">Message sent</h3>
+              <p className="mt-2 max-w-sm text-muted-foreground">
+                Thanks for reaching out. I&apos;ll reply to the email address you provided.
+              </p>
+              <button type="button" className="btn btn-ghost mt-8" onClick={() => setStatus({ state: 'idle' })}>
+                Send another message
+              </button>
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit} className="space-y-5">
+              <input type="checkbox" name="botcheck" className="hidden" tabIndex={-1} autoComplete="off" />
+              <div className="grid gap-5 sm:grid-cols-2">
+                <label className="block">
+                  <span className="mb-2 block text-sm text-foreground/85">Name</span>
+                  <input name="name" required maxLength={100} className="field" placeholder="Your name" />
                 </label>
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  value={formState.name}
-                  onChange={handleChange}
-                  className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                  placeholder="Your name"
-                  required
-                />
-              </div>
-              <div>
-                <label htmlFor="email" className="block text-sm font-medium mb-2">
-                  Email
+                <label className="block">
+                  <span className="mb-2 block text-sm text-foreground/85">Email</span>
+                  <input
+                    name="email"
+                    type="email"
+                    required
+                    maxLength={200}
+                    className="field"
+                    placeholder="you@company.com"
+                  />
                 </label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={formState.email}
-                  onChange={handleChange}
-                  className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                  placeholder="your.email@example.com"
-                  required
-                />
               </div>
-            </div>
-            <div>
-              <label htmlFor="subject" className="block text-sm font-medium mb-2">
-                Subject
+              <label className="block">
+                <span className="mb-2 block text-sm text-foreground/85">What&apos;s it about?</span>
+                <select name="topic" className="field" defaultValue={topics[0]}>
+                  {topics.map((topic) => (
+                    <option key={topic} className="bg-background">
+                      {topic}
+                    </option>
+                  ))}
+                </select>
               </label>
-              <input
-                type="text"
-                id="subject"
-                name="subject"
-                value={formState.subject}
-                onChange={handleChange}
-                className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                placeholder="What is this regarding?"
-                required
-              />
-            </div>
-            <div>
-              <label htmlFor="message" className="block text-sm font-medium mb-2">
-                Message
+              <label className="block">
+                <span className="mb-2 block text-sm text-foreground/85">Message</span>
+                <textarea
+                  name="message"
+                  required
+                  rows={6}
+                  maxLength={5000}
+                  className="field resize-y"
+                  placeholder="Tell me a bit about your project or question..."
+                />
               </label>
-              <textarea
-                id="message"
-                name="message"
-                rows={5}
-                value={formState.message}
-                onChange={handleChange}
-                className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                placeholder="Your message..."
-                required
-              ></textarea>
-            </div>
-            <div>
-              <Button 
-                type="submit" 
-                size="lg" 
-                className="w-full md:w-auto"
-                disabled={status.submitting}
-              >
-                {status.submitting ? 'Sending...' : 'Send Message'}
-              </Button>
-              
-              {status.info.msg && (
-                <div className={`mt-4 p-3 rounded ${status.info.error ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}`}>
-                  {status.info.msg}
-                </div>
+
+              {status.state === 'error' && (
+                <p role="alert" className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+                  {status.message}
+                </p>
               )}
-            </div>
-          </form>
+
+              <button type="submit" className="btn btn-primary w-full sm:w-auto" disabled={status.state === 'sending'}>
+                {status.state === 'sending' ? (
+                  <>
+                    <Loader2 size={16} className="animate-spin" /> Sending...
+                  </>
+                ) : (
+                  <>
+                    <Send size={16} /> Send message
+                  </>
+                )}
+              </button>
+            </form>
+          )}
         </div>
       </div>
     </section>
